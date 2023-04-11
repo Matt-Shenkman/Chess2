@@ -4,7 +4,7 @@ import Pawn from './Pawn';
 import './Board.css'
 
 
-const Board = (props) => {
+function Board (props) {
 
   const writeChessBoard = () => {
     let board = [];
@@ -17,8 +17,6 @@ const Board = (props) => {
           {getPeice(i,j)}
           {(i%2 == j%2 ? boardImg[0]: boardImg[1])}
         </div>
-
-
          row.push(tilePeices);
       }
       board.push(<div className='row'>{row}</div>)
