@@ -1,4 +1,5 @@
 import Board from './components/Board';
+import Message from './components/Message';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import './App.css';
@@ -19,9 +20,10 @@ function App() {
   console.log("apppp")
   console.log(gameState)
   return (
-    <div className="App">
-      <Board gameState = {gameState}/>
-    </div>
+    // <div className="App">
+    //   <Board gameState = {gameState}/>
+    // </div>
+    <Message/>
   );
 }
 
