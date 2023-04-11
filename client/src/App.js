@@ -1,7 +1,8 @@
 import Board from './components/Board';
 import Message from './components/Message';
 import { useState } from 'react';
-import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
+
 import './App.css';
 
 function App() {
@@ -20,10 +21,14 @@ function App() {
   console.log("apppp")
   console.log(gameState)
   return (
-    // <div className="App">
-    //   <Board gameState = {gameState}/>
-    // </div>
-    <Message/>
+    <div>
+      
+      <Routes>
+        <Route key="board" path="/" element={<Board gameState = {gameState} />} />
+        <Route key="meassager" path="/messager" element={<Message />} />
+        
+      </Routes>
+    </div>
   );
 }
 
