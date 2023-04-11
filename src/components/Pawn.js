@@ -14,8 +14,17 @@ const [direction, setDirection] = useState('up')
         setColor(props.color)
         setDirection(props.direction)
     })
+
+    const handleClick = () => {
+        return
+    }
+
   return (
-    <img alt="bp" src="/images/peices/b_pawn.svg" className="peices"/>
+    <img 
+        alt= {color == 'black' ? 'bp': 'wp'} 
+        src= {color == 'black' ? '/images/peices/b_pawn.svg': '/images/peices/w_pawn.svg'} 
+        className= "peices"
+        onClick= {handleClick}/>
   );
 };
 

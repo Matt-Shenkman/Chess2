@@ -30,10 +30,10 @@ const Board = (props) => {
   const getPeice  = (i,j) => {
     const peice = props.gameState[i][j];
     switch(peice) {
-      case 'bp': <Pawn/>
-        return 
+      case 'bp': 
+        return <Pawn color = {'black'} location = {(i,j)} direction = {"down"}/>
       case 'wp':
-        return <img alt="wp" src="/images/peices/w_pawn.svg" className="peices"/>
+        return <Pawn color = {'white'} location = {(i,j)} direction = {"up"}/>
       case 'br':
         return <img alt="br" src="/images/peices/b_rook.svg" className="peices"/>
       case 'wr':
