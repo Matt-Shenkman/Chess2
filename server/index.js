@@ -30,7 +30,10 @@ io.on("connection", (socket) => {
       socketQueue[1].socket.join(currRoom);
       idToRoom[socketQueue[0].userId] = currRoom;
       idToRoom[socketQueue[1].userId] = currRoom;
-      joinedRooms.push({room: currRoom, user1: socketQueue[0].userId, user2: socketQueue[1].userId})
+      currJoined = {room: currRoom, user1: socketQueue[0].userId, user2: socketQueue[1].userId}
+      socketQueue[0].socket.to(currRoom).emit("receive_connection_info", currJoined)
+      socketQueue[1].socket.to(currRoom).emit("receive_connection_info", currJoined)
+      joinedRooms.push(currJoined);
       socketQueue = [];
       currRoom ++;
     }

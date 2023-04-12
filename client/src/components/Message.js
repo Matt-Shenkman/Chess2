@@ -13,6 +13,8 @@ const socket = io.connect("http://localhost:3001")
 function Message (props) {
   const [message, setMessage] = useState("");
   const [messageReceived, setMessageReceived] = useState("");
+  const [joinedState, setJoinedState] = useState(0);
+  const [info, setInfo] = useState({});
    // Generate a unique ID and store it as a cookie
    const [userId, setUserId] = useState(() => {
     const id = Cookies.get('userId') || uuidv4();
@@ -22,6 +24,8 @@ function Message (props) {
 
   const joinRoom = function(){
     socket.emit("join_room", {userId});
+    setJoinedState(1);
+    console.log("joined")
   }
   const sendMessage = function(){
     socket.emit("send_message", {message, userId})
@@ -33,7 +37,22 @@ function Message (props) {
     socket.on("receive_message", (data)=>{
       setMessageReceived(data.message)
     })
+    socket.on("receive_connection_info", (data)=>{
+      setInfo(data);
+      setJoinedState(2);
+      console.log("this is the info")
+      console.log(info)
+      console.log(data)
+    })
   }, [socket])
+  var status;
+  if(joinedState == 0){
+    status = <h3> not joined yet </h3>
+  } else if (joinedState == 1){
+    status = <h3> waiting </h3>
+  } else {
+    status = <h3> connected </h3>
+  }
   return (
     <div>
       <button onClick={joinRoom}> Join Room</button>
@@ -43,6 +62,7 @@ function Message (props) {
       <button onClick={sendMessage}>Send Message </button>
       <h1>message received: </h1>
       {messageReceived}
+      {status}
     </div>
   );
 };
