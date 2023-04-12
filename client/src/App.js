@@ -22,11 +22,9 @@ function App() {
   console.log(gameState)
   return (
     <div>
-      
       <Routes>
         <Route key="board" path="/" element={<Board gameState = {gameState} />} />
         <Route key="meassager" path="/messager" element={<Message />} />
-        
       </Routes>
     </div>
   );
