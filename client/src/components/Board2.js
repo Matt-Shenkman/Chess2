@@ -5,6 +5,7 @@ import Bishop from './Bishop'
 import Queen from './Queen'
 import King from './King'
 import Rook from './Rook'
+import GameState from './GameState'
 
 function sketch(p5, props) {
   let squareSize = 500/8;
@@ -18,13 +19,13 @@ function sketch(p5, props) {
   var holdingPiece = false;
   var pressed = false;
   var possibleMoves = [];
-  var gameState = props.gameState;
+  var gameState = new GameState(props.gameState);
 
   var resetPieceArray = function(customGameState){
     peices = []
     for (let x = 0; x < 8; x++) {
       for (let y = 0; y < 8; y++) {
-        const piece = customGameState[y][x];
+        const piece = customGameState.board[y][x];
         switch(piece){
           case 'bp': 
             //peices.push(new Pawn(x,y,"black", customGameState));
@@ -134,7 +135,7 @@ function sketch(p5, props) {
               if(peices[k].color != clickedPiece.color){
                 var opponentMoves = peices[k].possibleMoves();
                 for(let l = 0 ; l < opponentMoves.length; l ++){
-                  const pieceAttacked = possiblePostion[opponentMoves[l][0]][opponentMoves[l][1]];
+                  const pieceAttacked = possiblePostion.board[opponentMoves[l][0]][opponentMoves[l][1]];
                   if((pieceAttacked == 'wk' && clickedPiece.color == "white") || (pieceAttacked == 'bk' && clickedPiece.color == "black")){
                     if(!removedAlready){
                       possibleMoves.splice(j, 1);

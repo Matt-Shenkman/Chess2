@@ -1,3 +1,5 @@
+import GameState from './GameState'
+
 class Knight{
   constructor(x, y, color, gameState){
     this.x = x;
@@ -7,7 +9,7 @@ class Knight{
     this.gameState = gameState
   }
   #canMoveTo(x, y){
-    const piece = this.gameState[y][x];
+    const piece = this.gameState.board[y][x];
     if(piece == '' || piece.charAt(0) != this.color.charAt(0)){
       return true;
     }
@@ -43,16 +45,16 @@ class Knight{
   }
   updatedBoardState(moveX, moveY){
     var copy = [];
-    for (var i = 0; i < this.gameState.length; i++) {
+    for (var i = 0; i < this.gameState.board.length; i++) {
       copy[i] = [];
-      for (var j = 0; j < this.gameState[i].length; j++) {
-        copy[i][j] = this.gameState[i][j];
+      for (var j = 0; j < this.gameState.board[i].length; j++) {
+        copy[i][j] = this.gameState.board[i][j];
       }
     }
     var store = copy[this.y][this.x];
     copy[this.y][this.x] = '';
     copy[moveY][moveX] = store;
-    return copy;
+    return new GameState(copy);
   }
 
 }
