@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { useState } from 'react';
 import Pawn from './Pawn';
 import Knight from './Knight';
-
 import './Board.css'
 
 
@@ -18,8 +17,6 @@ function Board (props) {
     }
     return false;
   }
-
-
   const writeChessBoard = () => {
     let board = [];
     let boardImg = [<img alt="white-tile" src="/images/board-squares/White-Dark.svg" className="tile"/>, <img alt="black-tile" src="/images/board-squares/Green-Dark.svg" className="tile"/>];
