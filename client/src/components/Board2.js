@@ -3,6 +3,7 @@ import { ReactP5Wrapper } from 'react-p5-wrapper';
 import Knight from './Knight'
 import Bishop from './Bishop'
 import Queen from './Queen'
+import King from './King'
 
 function sketch(p5, props) {
   let squareSize = 500/8;
@@ -11,7 +12,7 @@ function sketch(p5, props) {
   let whiteImg, greenImg, dot;
   let bRook, bKnight, bKing, bQueen, bBishop, bPawn;
   let wRook, wKnight, wKing, wQueen, wBishop, wPawn;
-  let peices = [new Knight(1,1, "white", props.gameState), new Knight(3,1, "black",props.gameState), new Knight(5,1, "black",props.gameState), new Bishop(0,0,"white", props.gameState), new Queen(7,7,"black", props.gameState)]
+  var peices = [];
   var clickedPiece = null;
   var holdingPiece = false;
   var pressed = false;
@@ -38,6 +39,51 @@ function sketch(p5, props) {
   }
 
   p5.preload = () => {
+    for (let x = 0; x < 8; x++) {
+      for (let y = 0; y < 8; y++) {
+        const piece = props.gameState[y][x];
+        switch(piece){
+          case 'bp': 
+            //peices.push(new Pawn(x,y,"black", props.gameState));
+            break;
+          case 'wp':
+            //peices.push(new Pawn(x,y,"white", props.gameState));
+            break;
+          case 'br':
+            //peices.push(new Rook(x,y,"black", props.gameState))
+            break;
+          case 'wr':
+            //peices.push(new Rook(x,y,"white", props.gameState))
+            break;
+          case 'bkn':
+            peices.push(new Knight(x,y,"black", props.gameState))
+            break;
+          case 'wkn':
+            peices.push(new Knight(x,y,"white", props.gameState))
+            break;
+          case 'bb':
+            peices.push(new Bishop(x,y,"black", props.gameState))
+            break;
+          case 'wb':
+            peices.push(new Bishop(x,y,"white", props.gameState))
+            break;
+          case 'bk':
+            peices.push(new King(x,y,"black", props.gameState))
+            break;
+          case 'wk':
+            peices.push(new King(x,y,"white", props.gameState))
+            break;
+          case 'bq':
+            peices.push(new Queen(x,y,"black", props.gameState))
+            break;
+          case 'wq':
+            peices.push(new Queen(x,y,"white", props.gameState))
+            break;
+        }
+      }
+    }
+
+
     whiteImg = p5.loadImage(boardImg[0]);
     greenImg = p5.loadImage(boardImg[1]);
     wRook = p5.loadImage("/images/peices/w_rook.svg")
@@ -64,15 +110,63 @@ function sketch(p5, props) {
 
   p5.mousePressed = () => {
     pressed = true;
-    console.log("pressed")
     const mouseX = p5.mouseX;
     const mouseY = p5.mouseY;
+    
     //if press mouse and have not clicked a piece, then set the clicked piece to piece you clicked 
     if(!clickedPiece){
-      for(let i = 0; i < peices.length; i++){
+      for(let i = peices.length-1; i >= 0; i--){
         if(Math.floor(mouseX/squareSize) == peices[i].x && Math.floor(mouseY/squareSize) == peices[i].y){
           clickedPiece = peices[i];
           possibleMoves = clickedPiece.possibleMoves();
+          //loop through all possible moves and see if they put the moving side in check
+          for(let j = possibleMoves.length - 1; j >= 0; j--){
+            var removed = null;
+            var removedAlready = false;
+            //set up possible position
+            var removedIndex = 0;
+            for(let k = peices.length-1; k >= 0; k--){
+              if(peices[k].x == possibleMoves[j][1] && peices[k].y == possibleMoves[j][0]){
+                removed = peices.splice(k, 1)[0];
+                removedIndex = k;
+              }
+            }
+            var store = props.gameState[clickedPiece.y][clickedPiece.x];
+            var storeX = clickedPiece.x;
+            var storeY = clickedPiece.y;
+
+            props.gameState[clickedPiece.y][clickedPiece.x] = '';
+            clickedPiece.x = possibleMoves[j][1];
+            clickedPiece.y = possibleMoves[j][0];
+            var storeTook = props.gameState[clickedPiece.y][clickedPiece.x];
+            props.gameState[clickedPiece.y][clickedPiece.x] = store;
+            
+            //see if moving side is in check
+            for(let k = 0; k < peices.length; k++){
+              if(peices[k].color != clickedPiece.color){
+                var opponentMoves = peices[k].possibleMoves();
+                for(let l = 0 ; l < opponentMoves.length; l ++){
+                  const pieceAttacked = props.gameState[opponentMoves[l][0]][opponentMoves[l][1]];
+                  if((pieceAttacked == 'wk' && clickedPiece.color == "white") || (pieceAttacked == 'bk' && clickedPiece.color == "black")){
+                    if(!removedAlready){
+                      possibleMoves.splice(j, 1);
+                      removedAlready = true;
+                    }
+                  }
+                }
+              }
+            }
+            //reset position
+            if(removed){
+              peices.splice(removedIndex, 0, removed);
+            }
+            props.gameState[clickedPiece.y][clickedPiece.x] = storeTook;
+            clickedPiece.x = storeX;
+            clickedPiece.y = storeY;
+            props.gameState[clickedPiece.y][clickedPiece.x] = store;
+          }
+
+
         }
       }
     }else{ // if press mouse piece is piece already clicked, then place piece if possible move
@@ -94,12 +188,9 @@ function sketch(p5, props) {
       makeMove(mouseX, mouseY)
     }
     holdingPiece = false;
-    console.log(holdingPiece)
   }
 
-
   p5.draw = () => {
-    console.log(props.gameState)
     //draw the board
     for (let x = 0; x < 8; x++) {
       for (let y = 0; y < 8; y++) {
@@ -127,6 +218,10 @@ function sketch(p5, props) {
         p5.image(wQueen, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
       }else if(peices[i].type == "queen"){
         p5.image(bQueen, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
+      }else if(peices[i].type == "king" && peices[i].color == "white"){
+        p5.image(wKing, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
+      }else if(peices[i].type == "king"){
+        p5.image(bKing, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
       }
     }
     //draw the piece if holding it 
@@ -143,6 +238,10 @@ function sketch(p5, props) {
         p5.image(wQueen, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
       }else if(clickedPiece.type == "queen"){
         p5.image(bQueen, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
+      }else if(clickedPiece.type == "king" && clickedPiece.color == "white"){
+        p5.image(wKing, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
+      }else if(clickedPiece.type == "king"){
+        p5.image(bKing, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
       }
     }
     //draw possible move dots
