@@ -64,7 +64,7 @@ class Queen{
     //like rook
     dx = 1;
     while(this.x + dx < 8 && this.#canMoveTo(this.x + dx, this.y)){
-      moves.push([this.y + dy, this.x + dx]);
+      moves.push([this.y, this.x + dx]);
       if(this.#isPieceAt(this.x + dx, this.y)){
         break;
       }
