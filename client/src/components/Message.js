@@ -6,11 +6,12 @@ import io from 'socket.io-client'
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
-const socket = io.connect("http://localhost:3001")
 
 
 
 function Message (props) {
+  const socket = io.connect("http://localhost:3001")
+
   const [message, setMessage] = useState("");
   const [messageReceived, setMessageReceived] = useState("");
   const [joinedState, setJoinedState] = useState(0);
