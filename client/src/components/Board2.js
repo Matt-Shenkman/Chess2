@@ -72,7 +72,6 @@ function sketch(p5, props) {
     }
   }
   var makeMove = function(mouseX, mouseY){
-    console.log(gameState)
     for(let i = 0; i < possibleMoves.length; i++){
       if(Math.floor(mouseX/squareSize) == possibleMoves[i][1] && Math.floor(mouseY/squareSize) == possibleMoves[i][0]){
         //get new game state
@@ -80,34 +79,6 @@ function sketch(p5, props) {
         gameState = newGameState;
         //set to all pieces
         resetPieceArray(gameState);
-        //remove bulldozed pieces
-        // if(clickedPiece.type == "rook"){
-        //   var store = gameState[clickedPiece.y][clickedPiece.x];
-        //   gameState[clickedPiece.y][clickedPiece.x] = '';
-        //   if(clickedPiece.y == possibleMoves[i][0]){
-        //     for(var j = 0; j <= Math.abs(clickedPiece.x - possibleMoves[i][1]); j++){
-        //       const bulldozedX = Math.min(clickedPiece.x, possibleMoves[i][1]) + j;
-        //       const bulldozedY = clickedPiece.y;
-        //       gameState[bulldozedY][bulldozedX] = '';
-        //       for(let k = peices.length-1; k >= 0; k--){
-        //         if(peices[k].x == bulldozedX && peices[k].y == bulldozedY && bulldozedX!=clickedPiece.x){
-        //           peices.splice(k, 1);
-        //         }
-        //       }
-        //     }
-        //   }else {
-        //     for(var j = 0; j <= Math.abs(clickedPiece.y - possibleMoves[i][0]); j++){
-        //       const bulldozedX = clickedPiece.x;
-        //       const bulldozedY = Math.min(clickedPiece.y, possibleMoves[i][0]) + j;
-        //       gameState[bulldozedX][bulldozedY] = '';
-        //       for(let k = peices.length-1; k >= 0; k--){
-        //         if(peices[k].x == bulldozedX && peices[k].y == bulldozedY && bulldozedY!=clickedPiece.y){
-        //           peices.splice(k, 1);
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
       }
     }
     clickedPiece = null;
@@ -158,9 +129,6 @@ function sketch(p5, props) {
             //set up possible position
             var possiblePostion = clickedPiece.updatedBoardState(possibleMoves[j][1], possibleMoves[j][0]);
             resetPieceArray(possiblePostion);
-            console.log(possibleMoves[j])
-            console.log("pp:"+possiblePostion)
-            console.log(peices)
             //see if moving side is in check
             for(let k = 0; k < peices.length; k++){
               if(peices[k].color != clickedPiece.color){

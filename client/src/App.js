@@ -29,8 +29,6 @@ function App() {
   ]
   const [gameState, setGameState] = useState(setup)
   
-  console.log("apppp")
-  console.log(gameState)
   return (
     <div>
       <Routes>
