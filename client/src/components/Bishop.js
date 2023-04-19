@@ -74,5 +74,18 @@ class Bishop{
     }
     return moves;
   }
+  updatedBoardState(moveX, moveY){
+    var copy = [];
+    for (var i = 0; i < this.gameState.length; i++) {
+      copy[i] = [];
+      for (var j = 0; j < this.gameState[i].length; j++) {
+        copy[i][j] = this.gameState[i][j];
+      }
+    }
+    var store = copy[this.y][this.x];
+    copy[this.y][this.x] = '';
+    copy[moveY][moveX] = store;
+    return copy;
+  }
 }
 export default Bishop;
