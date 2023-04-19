@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactP5Wrapper } from 'react-p5-wrapper';
 import Knight from './Knight'
 import Bishop from './Bishop'
+import Queen from './Queen'
 
 function sketch(p5, props) {
   let squareSize = 500/8;
@@ -10,7 +11,7 @@ function sketch(p5, props) {
   let whiteImg, greenImg, dot;
   let bRook, bKnight, bKing, bQueen, bBishop, bPawn;
   let wRook, wKnight, wKing, wQueen, wBishop, wPawn;
-  let peices = [new Knight(1,1, "white", props.gameState), new Knight(3,1, "black",props.gameState), new Knight(5,1, "black",props.gameState), new Bishop(0,0,"white", props.gameState)]
+  let peices = [new Knight(1,1, "white", props.gameState), new Knight(3,1, "black",props.gameState), new Knight(5,1, "black",props.gameState), new Bishop(0,0,"white", props.gameState), new Queen(7,7,"black", props.gameState)]
   var clickedPiece = null;
   var holdingPiece = false;
   var pressed = false;
@@ -76,8 +77,7 @@ function sketch(p5, props) {
       }
     }else{ // if press mouse piece is piece already clicked, then place piece if possible move
       makeMove(mouseX, mouseY)
-    }
-    
+    } 
   }
   p5.mouseDragged = () => {
     //if mouse pressed and dragging, then show piece in hand
@@ -112,14 +112,21 @@ function sketch(p5, props) {
     }
     //draw the pieces
     for(let i = 0; i < peices.length; i++){
-      if(peices[i].type == "knight" && peices[i].color == "white" && !(clickedPiece && clickedPiece.x == peices[i].x && clickedPiece.y == peices[i].y && holdingPiece)){
+      if (clickedPiece && clickedPiece.x == peices[i].x && clickedPiece.y == peices[i].y && holdingPiece){
+        continue;
+      }
+      if(peices[i].type == "knight" && peices[i].color == "white"){
         p5.image(wKnight, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
-      }else if(peices[i].type == "knight" && !(clickedPiece && clickedPiece.x == peices[i].x && clickedPiece.y == peices[i].y && holdingPiece)){
+      }else if(peices[i].type == "knight"){
         p5.image(bKnight, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
-      }else if(peices[i].type == "bishop" && peices[i].color == "white" && !(clickedPiece && clickedPiece.x == peices[i].x && clickedPiece.y == peices[i].y && holdingPiece)){
+      }else if(peices[i].type == "bishop" && peices[i].color == "white"){
         p5.image(wBishop, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
-      }else if(peices[i].type == "bishop" && !(clickedPiece && clickedPiece.x == peices[i].x && clickedPiece.y == peices[i].y && holdingPiece)){
+      }else if(peices[i].type == "bishop"){
         p5.image(bBishop, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
+      }else if(peices[i].type == "queen" && peices[i].color == "white"){
+        p5.image(wQueen, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
+      }else if(peices[i].type == "queen"){
+        p5.image(bQueen, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
       }
     }
     //draw the piece if holding it 
@@ -132,6 +139,10 @@ function sketch(p5, props) {
         p5.image(wBishop, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
       }else if(clickedPiece.type == "bishop"){
         p5.image(bBishop, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
+      }else if(clickedPiece.type == "queen" && clickedPiece.color == "white"){
+        p5.image(wQueen, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
+      }else if(clickedPiece.type == "queen"){
+        p5.image(bQueen, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
       }
     }
     //draw possible move dots
