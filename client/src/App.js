@@ -1,4 +1,5 @@
 import Board from './components/Board';
+import SketchComponent from './components/Board2';
 import Message from './components/Message';
 import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -6,15 +7,25 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 
 function App() {
+  // const setup = [
+  //   ['wr', 'wkn', 'wb', 'wq', 'wk', 'wb', 'wkn', 'wr'],
+  //   ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
+  //   ['', '', '', '', '', '', '', ''],
+  //   ['', '', '', '', '', '', '', ''],
+  //   ['', '', '', '', '', '', '', ''],
+  //   ['', '', '', '', '', '', '', ''],
+  //   ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
+  //   ['br', 'bkn', 'bb', 'bq', 'bk', 'bb', 'bkn', 'br'],
+  // ]
   const setup = [
-    ['br', 'bkn', 'bb', 'bq', 'bk', 'bb', 'bkn', 'br'],
-    ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
+    ['', '', '', '', '', '', '', ''],
+    ['', 'wkn', '', 'wkn', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
-    ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
-    ['wr', 'wkn', 'wb', 'wq', 'wk', 'wb', 'wkn', 'wr'],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
   ]
   const [gameState, setGameState] = useState(setup)
   
@@ -24,7 +35,8 @@ function App() {
     <div>
       <Routes>
         <Route key="board" path="/" element={<Board gameState = {gameState} />} />
-        <Route key="meassager" path="/messager" element={<Message />} />
+        <Route key="board" path="/board2" element={<SketchComponent gameState = {gameState}/>} />
+        {/* <Route key="meassager" path="/messager" element={<Message />} /> */}
       </Routes>
     </div>
   );
