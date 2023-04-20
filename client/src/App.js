@@ -1,5 +1,5 @@
-import Board from './components/Board';
-import SketchComponent from './components/Board2';
+import Board from './components/Board2';
+import SketchComponent from './components/Board';
 import Message from './components/Message';
 import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -18,22 +18,22 @@ function App() {
   //   ['br', 'bkn', 'bb', 'bq', 'bk', 'bb', 'bkn', 'br'],
   // ]
   const setup = [
-    ['wb', '', '', '', '', '', '', ''],
-    ['', 'wkn', '', '', 'bkn', '', '', ''],
-    ['', '', '', '', 'bkn', '', '', ''],
-    ['', 'bk', '', '', 'bq', '', '', ''],
-    ['', '', '', '', 'wr', '', '', ''],
+    ['', '', '', '', '', '', 'bk', ''],
+    ['', 'bp', 'bp', '', 'wp', '', '', ''],
+    ['bq', '', '', '', '', '', 'wk', ''],
+    ['', '', 'wp', '', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
-    ['', '', '', 'wq', 'wk', '', '', ''],
+    ['', 'wp', '', '', '', '', '', ''],
+    ['', '', '', 'wq', '', '', '', ''],
   ]
   const [gameState, setGameState] = useState(setup)
   
   return (
     <div>
       <Routes>
-        <Route key="board" path="/" element={<Board gameState = {gameState} />} />
-        <Route key="board" path="/board2" element={<SketchComponent gameState = {gameState}/>} />
+        <Route key="board" path="/board2" element={<Board gameState = {gameState} />} />
+        <Route key="board" path="/" element={<SketchComponent gameState = {gameState}/>} />
         {/* <Route key="meassager" path="/messager" element={<Message />} /> */}
       </Routes>
     </div>
