@@ -13,8 +13,8 @@ function sketch(p5, props) {
   let boardWidth = squareSize * 8;
   let boardImg = ["/images/board-squares/White-Dark.svg", "/images/board-squares/Green-Dark.svg"];
   let whiteImg, greenImg, dot;
-  let bRook, bKnight, bKing, bQueen, bBishop, bPawn;
-  let wRook, wKnight, wKing, wQueen, wBishop, wPawn;
+  let bRook, bKnight, bKing, bQueen, bBishop, bPawn, bSPawn;
+  let wRook, wKnight, wKing, wQueen, wBishop, wPawn, wSPawn;
   var peices = [];
   var clickedPiece = null;
   var holdingPiece = false;
@@ -28,6 +28,12 @@ function sketch(p5, props) {
       for (let y = 0; y < 8; y++) {
         const piece = customGameState.board[y][x];
         switch(piece){
+          case 'bsp':
+            peices.push(new Pawn(x,y,"black", customGameState, true));
+            break;
+          case 'wsp':
+            peices.push(new Pawn(x,y,"white", customGameState, true));
+            break;
           case 'bp': 
             peices.push(new Pawn(x,y,"black", customGameState));
             break;
@@ -78,7 +84,7 @@ function sketch(p5, props) {
       if(Math.floor(mouseX/squareSize) == possibleMoves[i][1] && Math.floor(mouseY/squareSize) == possibleMoves[i][0]){
         var newGameState;
         //if promoting pawn, prompt user for what to promote to, pass this info the updatedBoardState
-        if(clickedPiece.type == "pawn" && 
+        if((clickedPiece.type == "pawn" || clickedPiece.type == "superpawn") && 
           ((clickedPiece.color == "white" && possibleMoves[i][0] == 0)||(clickedPiece.color == "black" && possibleMoves[i][0] == 7))){
             var promotion = prompt("Please enter something:");
             if(promotion != "q" && promotion != "n" && promotion != "b" && promotion != "r"){
@@ -112,6 +118,7 @@ function sketch(p5, props) {
     wKing = p5.loadImage("/images/peices/w_king.svg")
     wBishop = p5.loadImage("/images/peices/w_bishop.svg")
     wKnight = p5.loadImage("/images/peices/w_knight.svg")
+    wSPawn = p5.loadImage("/images/peices/w_spawn.png")
 
     bRook = p5.loadImage("/images/peices/b_rook.svg")
     bPawn = p5.loadImage("/images/peices/b_pawn.svg")
@@ -119,6 +126,7 @@ function sketch(p5, props) {
     bKing = p5.loadImage("/images/peices/b_king.svg")
     bBishop = p5.loadImage("/images/peices/b_bishop.svg")
     bKnight = p5.loadImage("/images/peices/b_knight.svg")
+    bSPawn = p5.loadImage("/images/peices/b_spawn.png")
 
     dot = p5.loadImage("/images/dot.svg")
   };
@@ -141,24 +149,40 @@ function sketch(p5, props) {
           possibleMoves = clickedPiece.possibleMoves();
           //loop through all possible moves and see if they put the moving side in check
           for(let j = possibleMoves.length - 1; j >= 0; j--){
-            var removedAlready = false;
+            var shouldRemove = false;
             //set up possible position
             var possiblePostion = clickedPiece.updatedBoardState(possibleMoves[j][1], possibleMoves[j][0]);
             resetPieceArray(possiblePostion);
-            //see if moving side is in check
+            
             for(let k = 0; k < peices.length; k++){
+              //see if moving side is in check
               if(peices[k].color != clickedPiece.color){
                 var opponentMoves = peices[k].possibleMoves();
                 for(let l = 0 ; l < opponentMoves.length; l ++){
                   const pieceAttacked = possiblePostion.board[opponentMoves[l][0]][opponentMoves[l][1]];
                   if((pieceAttacked == 'wk' && clickedPiece.color == "white") || (pieceAttacked == 'bk' && clickedPiece.color == "black")){
-                    if(!removedAlready){
-                      possibleMoves.splice(j, 1);
-                      removedAlready = true;
+                    shouldRemove = true;
+                  }
+                }
+              }
+              //king cannot move into superpawn
+              if(clickedPiece.type == "king"){
+                for(var dy = -1; dy <=1 ; dy++){
+                  for(var dx = -1; dx <=1 ; dx++){
+                    if(dy != 0 || dx!= 0){
+                      if(possibleMoves[j][0] + dy < 8 && possibleMoves[j][0] + dy >= 0 && possibleMoves[j][1] + dx < 8 && possibleMoves[j][1] + dx >= 0){
+                        const checkSP = gameState.board[possibleMoves[j][0] + dy][possibleMoves[j][1] + dx];
+                        if((clickedPiece.color == "white" && checkSP == "bsp")||(clickedPiece.color == "black" && checkSP == "wsp")){
+                          shouldRemove = true;
+                        }
+                      }
                     }
                   }
                 }
               }
+            }
+            if(shouldRemove){
+              possibleMoves.splice(j, 1);
             }
             //reset position
             resetPieceArray(gameState);
@@ -226,6 +250,10 @@ function sketch(p5, props) {
         p5.image(wPawn, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
       }else if(peices[i].type == "pawn"){
         p5.image(bPawn, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
+      }else if(peices[i].type == "superpawn" && peices[i].color == "white"){
+        p5.image(wSPawn, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
+      }else if(peices[i].type == "superpawn"){
+        p5.image(bSPawn, peices[i].x * squareSize - 250, peices[i].y * squareSize - 250, squareSize, squareSize);
       }
     }
     //draw the piece if holding it 
@@ -254,6 +282,10 @@ function sketch(p5, props) {
         p5.image(wPawn, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
       }else if(clickedPiece.type == "pawn"){
         p5.image(bPawn, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
+      }else if(clickedPiece.type == "superpawn" && clickedPiece.color == "white"){
+        p5.image(wSPawn, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
+      }else if(clickedPiece.type == "superpawn"){
+        p5.image(bSPawn, p5.mouseX-250 - squareSize/2, p5.mouseY-250- squareSize/2, squareSize, squareSize);
       }
     }
     //draw possible move dots

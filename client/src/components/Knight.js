@@ -54,6 +54,23 @@ class Knight{
     var store = copy[this.y][this.x];
     copy[this.y][this.x] = '';
     copy[moveY][moveX] = store;
+
+    //if move into super pawn, turn to pawn
+    for(var dy = -1; dy <=1 ; dy++){
+      for(var dx = -1; dx <=1 ; dx++){
+        if(dy != 0 || dx!= 0){
+          if(moveY + dy < 8 && moveY + dy >= 0 && moveX + dx < 8 && moveX + dx >= 0){
+            if(this.color == "white" && copy[moveY + dy][moveX + dx] == "bsp"){
+              copy[moveY][moveX] = "wp";
+            } else if(this.color == "black" && copy[moveY + dy][moveX + dx] == "wsp"){
+              copy[moveY][moveX] = "bp";
+            }
+          }
+        }
+      }
+    }
+
+
     return new GameState(copy);
   }
 
