@@ -19,7 +19,7 @@ class Rook{
     const piece = this.gameState.board[y][x];
     return piece != '';
   }
-  #isOppColorPieceAt(x, y){
+  #isSameColorPieceAt(x, y){
     const piece = this.gameState.board[y][x];
     return piece != '' && piece.charAt(0) == this.color.charAt(0);
   }
@@ -29,7 +29,7 @@ class Rook{
     var dy = 1;
     while(this.x + dx < 8 && this.#canMoveTo(this.x + dx, this.y) && dx <= 3){
       moves.push([this.y, this.x + dx]);
-      if(this.#isOppColorPieceAt(this.x + dx, this.y)){
+      if(this.#isSameColorPieceAt(this.x + dx, this.y)){
         break;
       }
       dx++;
@@ -37,7 +37,7 @@ class Rook{
     dx = 1;
     while(this.x - dx >= 0 && this.#canMoveTo(this.x - dx, this.y) && dx <= 3){
       moves.push([this.y, this.x - dx]);
-      if(this.#isOppColorPieceAt(this.x - dx, this.y)){
+      if(this.#isSameColorPieceAt(this.x - dx, this.y)){
         break;
       }
       dx++;
@@ -45,7 +45,7 @@ class Rook{
     dy = 1;
     while(this.y + dy < 8 && this.#canMoveTo(this.x, this.y + dy) && dy <= 3){
       moves.push([this.y + dy, this.x]);
-      if(this.#isOppColorPieceAt(this.x, this.y + dy)){
+      if(this.#isSameColorPieceAt(this.x, this.y + dy)){
         break;
       }
       dy++;
@@ -53,7 +53,7 @@ class Rook{
     dy = 1;
     while(this.y - dy >= 0 && this.#canMoveTo(this.x, this.y - dy) && dy <= 3){
       moves.push([this.y - dy, this.x]); 
-      if(this.#isOppColorPieceAt(this.x, this.y - dy)){
+      if(this.#isSameColorPieceAt(this.x, this.y - dy)){
         break;
       }
       dy++;

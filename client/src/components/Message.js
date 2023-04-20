@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
-import Pawn from './Pawn';
+import Pawn from './Pawn2';
 import './Board.css'
 import io from 'socket.io-client'
 import { useEffect, useState } from 'react';
