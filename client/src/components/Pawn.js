@@ -1,15 +1,19 @@
 import GameState from './GameState'
 
 class Pawn{
-  constructor(x, y, color, gameState){
+  constructor(x, y, color, gameState, superPawn){
     this.x = x;
     this.y = y;
     this.color = color
-    this.type = "pawn"
+    if(superPawn){
+      this.type = "superpawn"
+    }else{
+      this.type = "pawn"
+    }
     this.gameState = gameState
   }
-  #isOppColorPieceAt(x, y){
-    const piece = this.gameState.board[y][x];
+  #isOppColorPieceAt(x, y, board){
+    const piece = board[y][x];
     return piece != '' && piece.charAt(0) != this.color.charAt(0);
   }
   #isEmpty(x, y){
@@ -34,22 +38,22 @@ class Pawn{
         moves.push([this.y+2,this.x])
       }
     }
-    if(this.y + 1 < 8 && this.x + 1 < 8 && this.#isOppColorPieceAt(this.x + 1, this.y + 1 )){
+    if(this.y + 1 < 8 && this.x + 1 < 8 && this.#isOppColorPieceAt(this.x + 1, this.y + 1 , this.gameState.board)){
       moves.push([this.y+1,this.x+1])
     }else if(this.y + 1 < 8 && this.x + 1 < 8 && this.color == "black" && this.gameState.epFile == this.x + 1 && this.gameState.epRank == this.y + 1){
       moves.push([this.y+1,this.x+1])
     }
-    if(this.y + 1 < 8 && this.x - 1 >=0 && this.#isOppColorPieceAt(this.x - 1, this.y + 1 )){
+    if(this.y + 1 < 8 && this.x - 1 >=0 && this.#isOppColorPieceAt(this.x - 1, this.y + 1 , this.gameState.board)){
       moves.push([this.y+1,this.x-1])
     }else if(this.y + 1 < 8 && this.x - 1 >=0 && this.color == "black" && this.gameState.epFile == this.x - 1 && this.gameState.epRank == this.y + 1){
       moves.push([this.y+1,this.x-1])
     }
-    if(this.y - 1 >=0 && this.x + 1 < 8 && this.#isOppColorPieceAt(this.x + 1, this.y - 1 )){
+    if(this.y - 1 >=0 && this.x + 1 < 8 && this.#isOppColorPieceAt(this.x + 1, this.y - 1 , this.gameState.board)){
       moves.push([this.y-1,this.x+1])
     }else if(this.y - 1 >=0 && this.x + 1 < 8 && this.color == "white" && this.gameState.epFile == this.x + 1 && this.gameState.epRank == this.y - 1){
       moves.push([this.y-1,this.x+1])
     }
-    if(this.y - 1 >=0 && this.x - 1 >=0 && this.#isOppColorPieceAt(this.x - 1, this.y - 1 )){
+    if(this.y - 1 >=0 && this.x - 1 >=0 && this.#isOppColorPieceAt(this.x - 1, this.y - 1 , this.gameState.board)){
       moves.push([this.y-1,this.x-1])
     }else if(this.y - 1 >=0 && this.x - 1 >=0 && this.color == "white" && this.gameState.epFile == this.x - 1 && this.gameState.epRank == this.y - 1){
       moves.push([this.y-1,this.x-1])
@@ -103,6 +107,23 @@ class Pawn{
       epRank = (this.y + moveY)/2;
       epFile = this.x;
     }
+
+    //if super pawn turn to pawns
+    if(this.type == "superpawn"){
+      for(var dy = -1; dy <=1 ; dy++){
+        for(var dx = -1; dx <=1 ; dx++){
+          if(dy != 0 || dx!= 0){
+            if(moveY + dy < 8 && moveY + dy >= 0 && moveX + dx < 8 && moveX + dx >= 0){
+              if(this.#isOppColorPieceAt(moveX + dx, moveY + dy , copy) && 
+                copy[moveY + dy][moveX + dx]!= "bsp" && copy[moveY + dy][moveX + dx]!= "wsp"){
+                  copy[moveY + dy][moveX + dx] = this.color == "white" ? "bp" : "wp";
+              }
+            }
+          }
+        }
+      }
+    }
+    
     return new GameState(copy, epFile, epRank);
   }
 
