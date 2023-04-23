@@ -80,6 +80,8 @@ class Pawn{
         copy[moveY][moveX] = 'wkn'
       }else if (promotion == "b"){
         copy[moveY][moveX] = 'wb'
+      }else if (promotion == "p"){
+        copy[moveY][moveX] = 'wp'
       }
     }else if(this.color == 'black' && moveY == 7){
       if (promotion == "r"){
@@ -90,6 +92,8 @@ class Pawn{
         copy[moveY][moveX] = 'bkn'
       }else if (promotion == "b"){
         copy[moveY][moveX] = 'bb'
+      }else if (promotion == "p"){
+        copy[moveY][moveX] = 'bp'
       }
     }else{
       if(moveX == this.gameState.epFile && moveY == this.gameState.epRank){
@@ -107,6 +111,10 @@ class Pawn{
       epRank = (this.y + moveY)/2;
       epFile = this.x;
     }
+    var wK = this.gameState.whiteKingsideCastle;
+    var wQ = this.gameState.whiteQueensideCastle;
+    var bK = this.gameState.blackKingsideCastle;
+    var bQ = this.gameState.blackQueensideCastle;
 
     //if super pawn turn to pawns
     if(this.type == "superpawn"){
@@ -115,8 +123,18 @@ class Pawn{
           if(dy != 0 || dx!= 0){
             if(moveY + dy < 8 && moveY + dy >= 0 && moveX + dx < 8 && moveX + dx >= 0){
               if(this.#isOppColorPieceAt(moveX + dx, moveY + dy , copy) && 
-                copy[moveY + dy][moveX + dx]!= "bsp" && copy[moveY + dy][moveX + dx]!= "wsp"){
+                copy[moveY + dy][moveX + dx]!= "bsp" && copy[moveY + dy][moveX + dx]!= "wsp" &&
+                copy[moveY + dy][moveX + dx]!= "wk" && copy[moveY + dy][moveX + dx]!= "bk"){
                   copy[moveY + dy][moveX + dx] = this.color == "white" ? "bp" : "wp";
+                  if(this.color == "black" && moveX + dx == 0 && moveY + dy == 7){
+                    wQ = false;
+                  }else if(this.color == "black" && moveX + dx == 7 && moveY + dy == 7){
+                    wK = false;
+                  }else if(this.color == "white" && moveX + dx == 0 && moveY + dy == 0){
+                    bQ = false;
+                  }else if(this.color == "white" && moveX + dx == 7 && moveY + dy == 0){
+                    bK = false;
+                  }
               }
             }
           }
@@ -124,7 +142,16 @@ class Pawn{
       }
     }
     
-    return new GameState(copy, epFile, epRank);
+    if(this.color == "black" && moveX == 0 && moveY == 7){
+      wQ = false;
+    }else if(this.color == "black" && moveX == 7 && moveY == 7){
+      wK = false;
+    }else if(this.color == "white" && moveX == 0 && moveY == 0){
+      bQ = false;
+    }else if(this.color == "white" && moveX == 7 && moveY == 0){
+      bK = false;
+    }
+    return new GameState(copy, epFile, epRank, !this.gameState.whiteTurn, wK, wQ, bK, bQ);
   }
 
 }
