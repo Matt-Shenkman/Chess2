@@ -124,9 +124,20 @@ class Queen{
         }
       }
     }
-
-
-    return new GameState(copy);
+    var wK = this.gameState.whiteKingsideCastle;
+    var wQ = this.gameState.whiteQueensideCastle;
+    var bK = this.gameState.blackKingsideCastle;
+    var bQ = this.gameState.blackQueensideCastle;
+    if(this.color == "black" && moveX == 0 && moveY == 7){
+      wQ = false;
+    }else if(this.color == "black" && moveX == 7 && moveY == 7){
+      wK = false;
+    }else if(this.color == "white" && moveX == 0 && moveY == 0){
+      bQ = false;
+    }else if(this.color == "white" && moveX == 7 && moveY == 0){
+      bK = false;
+    }
+    return new GameState(copy, null, null, !this.gameState.whiteTurn, wK, wQ, bK, bQ);
   }
 }
 export default Queen;
